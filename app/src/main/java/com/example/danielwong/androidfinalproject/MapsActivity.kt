@@ -106,7 +106,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 // generateEarthquakes
                 val earthquakes = EarthquakeData.generateFeatures()
                 for (next in earthquakes) {
-                    Log.d("tag", next.id + " " + next.place)
+                    Log.d("tag", next.id + " " + next.place + " " + next.mag)
                 }
             } catch (ex: Exception) {
                 println("JSON parsing exception" + ex.printStackTrace())
