@@ -13,7 +13,6 @@ import java.net.HttpURLConnection
 import java.net.URL
 import com.google.gson.Gson
 import android.util.Log
-import org.json.JSONObject
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -26,29 +25,48 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_hour.geojson"
         GetEarthquakesAsyncTask().execute(url)
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    override fun onMapReady(googleMap: GoogleMap) {
+    override fun onMapReady(googleMap: GoogleMap){
         mMap = googleMap
-
         // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        val pasoRobles = LatLng(35.625648, -120.691322)
+        val santaMaria = LatLng(34.948399, -120.435883)
+        val bnds = LatLngBounds(santaMaria, pasoRobles)
+        val longCentered = (pasoRobles.longitude + santaMaria.longitude) /2
+        val center = LatLng(bnds.center.latitude, longCentered)
+
+
+        mMap.uiSettings.isZoomControlsEnabled = true
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(center, 9.toFloat()))
     }
+
+//    fun addSchools(googleMap: GoogleMap) {
+//
+//        for(s in TheSchools.SCHOOLS){
+//            println("ASDFASDFDSFASDFASDFASDFASDFASDFASD" + TheSchools.SCHOOLS.size)
+//            if(!s.latitude!!.isNaN() && !s.longitude!!.isNaN() && !s.name.isNullOrEmpty()){
+//                val name = s.name
+//                val ll = LatLng(s.latitude!!, s.longitude!!)
+//                val city = s.city
+//                val state = s.state
+//                val zip = s.zip
+//                googleMap.addMarker(MarkerOptions()
+//                    .position(ll)
+//                    .title(name)
+//                    .snippet(city + ", " + state + " " + zip + " (" + s.latitude + ", " + s.longitude + ")")
+//
+//
+//                )
+//            }
+//
+//        }
+//
+//    }
 
     inner class GetEarthquakesAsyncTask : AsyncTask<String, String, String>() {
 
@@ -66,12 +84,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 urlConnection.connectTimeout = CONNECTON_TIMEOUT_MILLISECONDS
                 urlConnection.readTimeout = CONNECTON_TIMEOUT_MILLISECONDS
 
-                //var inString = streamToString(urlConnection.inputStream)
 
-                // replaces need for streamToString()
                 val inString = urlConnection.inputStream.bufferedReader().readText()
-                Log.d("inString", inString)
 
+                Log.d("tag", inString)
                 publishProgress(inString)
             } catch (ex: Exception) {
                 println("HttpURLConnection exception" + ex)
@@ -86,31 +102,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         override fun onProgressUpdate(vararg values: String?) {
             try {
-
-//                var weatherData = Gson().fromJson(values[0], ForecastService::class.java)
-//                val conditions = weatherData.generateConditions()
-//
-//
-//                tvWeatherInfo.text =
-//                        "Location: " + conditions.city + " - " + conditions.country + "\n" +
-//                        "Humidity: " + conditions.humidity + "\n" +
-//                        "Temperature: " + conditions.temp + "\n" +
-//                        "Status: " + conditions.text + "\n" + "GSON!!!"
-//
-//                val forecasts = weatherData.query.results.channel.item.forecast
-//
-//                for (next in forecasts) {
-//                    println(next)
-//                }
-
-
+                var EarthquakeData = Gson().fromJson(values[0], CompleteJson::class.java)
+                // generateEarthquakes
             } catch (ex: Exception) {
                 println("JSON parsing exception" + ex.printStackTrace())
             }
         }
 
         override fun onPostExecute(result: String?) {
-            // Done
+            //addearthquakes now
         }
     }
 }
