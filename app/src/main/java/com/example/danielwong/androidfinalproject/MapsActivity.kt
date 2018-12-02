@@ -104,6 +104,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             try {
                 var EarthquakeData = Gson().fromJson(values[0], CompleteJson::class.java)
                 // generateEarthquakes
+                val earthquakes = EarthquakeData.generateFeatures()
+                for (next in earthquakes) {
+                    Log.d("tag", next.id)
+                }
             } catch (ex: Exception) {
                 println("JSON parsing exception" + ex.printStackTrace())
             }
