@@ -25,6 +25,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         setContentView(R.layout.activity_maps)
 
         val url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_hour.geojson"
+        GetEarthquakesAsyncTask().execute(url)
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -49,7 +50,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
 
-    inner class GetWeatherAsyncTask : AsyncTask<String, String, String>() {
+    inner class GetEarthquakesAsyncTask : AsyncTask<String, String, String>() {
 
         override fun onPreExecute() {
             // Before doInBackground
@@ -69,6 +70,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 // replaces need for streamToString()
                 val inString = urlConnection.inputStream.bufferedReader().readText()
+                Log.d("inString", inString)
 
                 publishProgress(inString)
             } catch (ex: Exception) {
